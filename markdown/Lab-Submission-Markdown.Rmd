@@ -1,7 +1,7 @@
 ---
 title: "Business Intelligence Lab Submission Markdown"
-author: "<Specify your group name here>"
-date: "<Specify the date when you submitted the lab>"
+author: "<Dynamite>"
+date: "<13th October 2023>"
 output:
   github_document: 
     toc: yes
@@ -11,33 +11,32 @@ output:
     df_print: default
 editor_options:
   chunk_output_type: console
+always_allow_html: yes
 ---
 
 # Student Details
 
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **Student ID Numbers and Names of Group Members** | *\<list one student name, group, and ID per line; you should be between 2 and 5 members per group\>* |
-|                                                   |                                                                                                      |
-|                                                   | 1.  ID - Group - Name                                                                                |
-|                                                   |                                                                                                      |
-|                                                   | 2.  ID - Group - Name                                                                                |
-|                                                   |                                                                                                      |
-|                                                   | 3.  ID - Group - Name                                                                                |
-|                                                   |                                                                                                      |
-|                                                   | 4.  ID - Group - Name                                                                                |
-|                                                   |                                                                                                      |
-|                                                   | 5.  ID - Group - Name                                                                                |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **GitHub Classroom Group Name**                   |                                                                                                      |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **Course Code**                                   | BBT4206                                                                                              |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **Course Name**                                   | Business Intelligence II                                                                             |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **Program**                                       | Bachelor of Business Information Technology                                                          |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
-| **Semester Duration**                             | 21^st^ August 2023 to 28^th^ November 2023                                                           |
-+---------------------------------------------------+------------------------------------------------------------------------------------------------------+
++---------------------------------------------------+---------------------------------------------+
+| **Student ID Numbers and Names of Group Members** | 1.  136017 - C - Unika Mureithi             |
+|                                                   |                                             |
+|                                                   | 2.  135864 - C - Winnie Githua              |
+|                                                   |                                             |
+|                                                   | 3.  120313 - C - Daniel Obala               |
+|                                                   |                                             |
+|                                                   | 4.  136804 - C - Joy Mutai                  |
+|                                                   |                                             |
+|                                                   | 5.  133598 - C - Shirlene Ouma              |
++---------------------------------------------------+---------------------------------------------+
+| **GitHub Classroom Group Name**                   | Dynamite                                    |
++---------------------------------------------------+---------------------------------------------+
+| **Course Code**                                   | BBT4206                                     |
++---------------------------------------------------+---------------------------------------------+
+| **Course Name**                                   | Business Intelligence II                    |
++---------------------------------------------------+---------------------------------------------+
+| **Program**                                       | Bachelor of Business Information Technology |
++---------------------------------------------------+---------------------------------------------+
+| **Semester Duration**                             | 21^st^ August 2023 to 28^th^ November 2023  |
++---------------------------------------------------+---------------------------------------------+
 
 # Setup Chunk
 
@@ -66,25 +65,62 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE,
 > editor_options:\
 > chunk_output_type: console
 
-# \<Provide an Appropriate Title Here\>
+# Loading a dataset
 
-Describe the code chunk here:
+Describe the code chunk here: Here the dataset is being loaded from the root folder
 
 ```{r Your Second Code Chunk}
 # Fill this with R related code that will be executed when the R markdown file
 # is rendered using knitR
 library(readr)
+# STEP 3. Load the Dataset ----
+## student_performance_dataset <-
+  ## read_csv("data/20230412-20230719-BI1-BBIT4-1-StudentPerformanceDataset copy.CSV",)
 ```
 
-Describe the next code chunk here:
+Describe the next code chunk here: Here the overall sentiments are applied after the relationship between the likes/wishes are put into place
 
 ```{r Your Third Code Chunk}
 # Fill this with other R related code that will be executed when the R markdown
 # file is rendered using knitR
 library(readr)
+# Inner Join the Likes/Wishes with the Corresponding Sentiment(s) ----
+## evaluation_likes_filtered_nrc <- evaluation_likes_filtered %>%
+  ## inner_join(get_sentiments("nrc"),
+             ## by = join_by(`Likes (tokenized)` == word),
+             ## relationship = "many-to-many")
+
+## evaluation_wishes_filtered_nrc <- evaluation_wishes_filtered %>%
+  ## inner_join(get_sentiments("nrc"),
+             ## by = join_by(`Wishes (tokenized)` == word),
+             ## relationship = "many-to-many")
+
+
+# Fill this with other R related code that will be executed when the R markdown
+# file is rendered using knitR
+library(readr)
+# Overall Sentiment ----
+## Evaluation Likes ----
+## nrc_likes_plot <- evaluation_likes_filtered_nrc %>%
+  ## group_by(sentiment) %>%
+  # You can filter by the class group if you wish
+  # filter(`Class Group` == "A") %>%
+  ## summarise(word_count = n()) %>%
+  ## ungroup() %>%
+ ## mutate(sentiment = reorder(sentiment, word_count)) %>%
+  # `fill = -word_count` is used to make the larger bars darker
+  ## ggplot(aes(sentiment, word_count, fill = -word_count)) +
+  ## geom_col() +
+  ## guides(fill = FALSE) + # Turn off the legend
+  ## blue_grey_theme() +
+  ## labs(x = "Sentiment", y = "Word Count") +
+  # scale_y_continuous(limits = c(0, 15000)) + #Hard code the axis limit
+  ## ggtitle("Lexicon-Based Sentiment Analysis of Course Evaluation Likes") +
+  ## coord_flip()
+
 ```
 
-## \<You Can Have a Sub-Title Here\>
+## 
 
 ```{r Your Fourth Code Chunk}
 # Fill this with other R related code that will be executed when the R markdown
@@ -92,14 +128,23 @@ library(readr)
 library(readr)
 ```
 
-# \<You can Provide Another Appropriate Title Here\>
+## Different Sentiments that were performed in the data
 
-Describe the code chunk here:
+Describe the code chunk here: Here the Frequency sentiment is being performed
 
 ```{r Your Fifth Code Chunk}
 # Fill this with R related code that will be executed when the R markdown file
 # is rendered using knitR
 library(readr)
+# Frequency Sentiment per Group and per Gender ----
+## nrc_likes_chord <-  evaluation_likes_filtered_nrc %>%
+  # filter(decade != "NA" & !sentiment %in% c("positive", "negative")) %>%
+  ## count(sentiment, `Class Group`) %>%
+ ## group_by(`Class Group`, sentiment) %>%
+  ## summarise(sentiment_sum = sum(n)) %>%
+  ## filter(sentiment_sum > 10) %>%
+  ## mutate(sentiment = reorder(sentiment, sentiment_sum)) %>%
+  ## ungroup()
 ```
 
 **etc.** as per the lab submission requirements.
